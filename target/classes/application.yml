@@ -8,7 +8,10 @@ spring:
     password: root
   thymeleaf:
     prefix: classpath:/templates/
-    suffix: .html
+  mvc:
+    static-path-pattern: classpath:/static/**
+
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

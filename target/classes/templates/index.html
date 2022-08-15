@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
 
+    <link rel="icon" href="/static/favicon.ico">"
     <link rel="stylesheet" href="/layui/css/layui.css">
     <script type="text/javascript" src="/jquery/jquery-3.6.0.min.js"></script>
     <script>
@@ -46,6 +47,7 @@
 
 
         </ul>
+
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
                 <a href="javascript:;">
@@ -64,6 +66,9 @@
                 </a>
             </li>
         </ul>
+
+
+
     </div>
 
     <div class="layui-side layui-bg-black">
@@ -71,11 +76,43 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">商品管理</a>
+                    <a class="" href="javascript:;">数据集管理</a>
                     <dl class="layui-nav-child">
                         <dd class="layui-this"><a href="javascript:;" onclick="change('table')">商品查询</a></dd>
-                        <dd><a href="">超链接</a></dd>
+                        <dd><a href="">添加数据集</a></dd>
                     </dl>
+                    <dl class="layui-nav-child">
+                        <dd class="layui-this"><a href="javascript:;" onclick="change('table')">商品查询</a></dd>
+
+                        <!--<div id="layerDemo2" >-->
+
+                            <!--<div>-->
+                                <!--<button data-method="setTop" class="layui-btn">-->
+                                    <!--<dd><a href="">数据集添加</a></dd>-->
+                                <!--</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <dd><a href="">数据集添加</a></dd>
+                    </dl>
+
+
+                </li>
+                <li class="layui-nav-tree" >
+                    <!--<a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" id="parentIframe">我被改变了</a>-->
+
+                </li>
+                <li>
+                    <div id="layerDemo" style="margin-bottom: 0;">
+                        <!--<blockquote class="layui-elem-quote layui-quote-nm">-->
+                            <!--Tips：为了更清晰演示，每触发下述一个例子之前，都会关闭所有已经演示的层-->
+                        <!--</blockquote>-->
+
+                        <div class="layui-btn-container" style="margin-top: 30px;">
+                            <button data-method="setTop" class="layui-btn">多窗口模式 + 层叠置顶 + Esc 关闭</button>
+                            <!--<button data-method="confirmTrans" class="layui-btn">配置一个透明的询问框</button>-->
+                            <!--<button data-method="notice" class="layui-btn">示范一个公告层</button>-->
+                        </div>
+                        </div>
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">数据分析</a>
@@ -131,6 +168,72 @@
         });
 
     });
+
+    //添加数据 弹出测试
+    // layer.open({
+    //     type: 2,
+    //     area: ['700px', '450px'],
+    //     fixed: false, //不固定
+    //     maxmin: true,
+    //     content: '/static/html/iframe.html'
+    // });
+
+    //添加数据 单窗触发事件
+    var active = {
+        setTop: function () {
+            var that = this;
+            //多窗口模式，层叠置顶
+            layer.open({
+                type: 2//此处以iframe举例
+                , title: '当你选择该窗体时，即会在最顶端'
+                , area: ['390px', '260px']
+                , shade: 0
+                , maxmin: true
+                , offset: [ //为了演示，随机坐标
+                    Math.random() * ($(window).height() - 300)
+                    , Math.random() * ($(window).width() - 390)
+                ]
+                , content: '/static/testhtml/test.html'
+
+                , btn: ['继续弹出', '全部关闭'] //只是为了演示
+                , yes: function () {
+                    $(that).click();
+                }
+                , btn2: function () {
+                    layer.closeAll();
+                }
+
+                , zIndex: layer.zIndex //重点1
+                , success: function (layero, index) {
+                    layer.setTop(layero); //重点2. 保持选中窗口置顶
+
+                    //记录索引，以便按 esc 键关闭。事件见代码最末尾处。
+                    layer.escIndex = layer.escIndex || [];
+                    layer.escIndex.unshift(index);
+                    //选中当前层时，将当前层索引放置在首位
+                    layero.on('mousedown', function () {
+                        var _index = layer.escIndex.indexOf(index);
+                        if (_index !== -1) {
+                            layer.escIndex.splice(_index, 1); //删除原有索引
+                        }
+                        layer.escIndex.unshift(index); //将索引插入到数组首位
+                    });
+                }
+                , end: function () {
+                    //更新索引
+                    if (typeof layer.escIndex === 'object') {
+                        layer.escIndex.splice(0, 1);
+                    }
+                }
+            });
+        }
+    }
+
+    $('#layerDemo .layui-btn').on('click', function(){
+        var othis = $(this), method = othis.data('method');
+        active[method] ? active[method].call(this, othis) : '';
+    });
+
 </script>
 </body>
 </html>
